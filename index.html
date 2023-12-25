@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>21</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    
+    h1 {
+      color: #000000;
+    }
+    
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blackjack</h1>
+  <p>
+    <button onclick="startGame()">Начать игру</button>
+    <button onclick="playerDrawCard()" id="hitButton" disabled>Беру карту</button>
+    <button onclick="playerEndTurn()" id="standButton" disabled>Стоп</button>
+  </p>
+  <p>Сумма ваших карт: <span id="playerScore"></span></p>
+  <p>Карты в вашей руке: <span id="playerHand"></span></p>
+
+  <hr>
+
+  <h2>Ход дилера</h2>
+  <p>Сумма карт дилера: <span id="dealerScore"></span></p>
+  <p>Карты в руке дилера: <span id="dealerHand"></span></p>
+
+  <script>
+    var cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11];
+    var playerHand = [];
+    var playerScore = 0;
+
+    var dealerHand = [];
+    var dealerScore = 0;
+    
+    var hitButton = document.getElementById("hitButton");
+    var standButton = document.getElementById("standButton");
+
+    function startGame() {
+      hitButton.disabled = false;
+      standButton.disabled = false;
+      playerHand = [];
+      playerScore = 0;
+      dealerHand = [];
+      dealerScore = 0;
+      document.getElementById('playerScore').innerText = "";
+      document.getElementById('playerHand').innerText = "";
+      document.getElementById('dealerScore').innerText = "";
+      document.getElementById('dealerHand').innerText = "";
+      playerDrawCard();
+      playerDrawCard();
+      dealerDrawCard();
+    }
+
+    function playerDrawCard() {
+      var card = cards[Math.floor(Math.random() * cards.length)];
+      playerHand.push(card);
+      playerScore += card;
+      document.getElementById('playerHand').innerText = playerHand.join(', ');
+      document.getElementById('playerScore').innerText = playerScore;
+      
+      if (playerScore > 21) {
+        playerEndTurn();
+      }
+    }
+
+    function playerEndTurn() {
+      hitButton.disabled = true;
+      standButton.disabled = true;
+      document.getElementById('playerHand').innerHTML += "&nbsp;(сумма: " + playerScore + ")";
+      dealerTurn();
+    }
+
+    function dealerDrawCard() {
+      var card = cards[Math.floor(Math.random() * cards.length)];
+      dealerHand.push(card);
+      dealerScore += card;
+    }
+
+    function dealerTurn() {
+      document.getElementById('dealerHand').innerText = dealerHand.join(', ');
+      document.getElementById('dealerScore').innerText = dealerScore;
+
+      while (dealerScore < 17) {
+        dealerDrawCard();
+        document.getElementById('dealerHand').innerText = dealerHand.join(', ');
+        document.getElementById('dealerScore').innerText = dealerScore;
+      }
+
+      if (dealerScore > 21 || dealerScore < playerScore) {
+        document.getElementById('dealerHand').innerHTML += "&nbsp;(сумма: " + dealerScore + ") - Дилер проиграл!";
+      } else if (dealerScore > playerScore) {
+        document.getElementById('dealerHand').innerHTML += "&nbsp;(сумма: " + dealerScore + ") - Дилер выиграл!";
+      } else {
+        document.getElementById('dealerHand').innerHTML += "&nbsp;(сумма: " + dealerScore + ") - Ничья!";
+      }
+      
+      hitButton.disabled = true;
+      standButton.disabled = true;
+    }
+  </script>
+</body>
+</html>
